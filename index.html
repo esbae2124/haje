@@ -309,7 +309,7 @@
         <div class="guide-banner" id="guide-banner">
             <div style="display:flex; align-items:center; gap:8px;">
                 <i class="fa-solid fa-circle-notch fa-spin" id="guide-icon"></i>
-                <span id="guide-text">구글 스프레드시트 연동 정보를 확인하고 있습니다...</span>
+                <span id="guide-text">연동 정보를 확인하고 있습니다...</span>
             </div>
             <button class="guide-close" onclick="closeBanner()">✕</button>
         </div>
@@ -492,24 +492,24 @@
                 try {
                     posts = await parseCSV(SHEET_CONFIG.boardUrl);
                 } catch(e) {
-                    console.warn("board 시트 로딩 오류, 데모 데이터 게시판으로 대체합니다.", e);
+                    console.warn("로딩 오류, 데모 데이터 게시판으로 대체합니다.", e);
                     posts = [...demoPosts];
                 }
 
                 icon.className = "fa-solid fa-circle-check";
                 icon.style.color = "#2a8aaa";
-                text.innerHTML = "구글 스프레드시트 실시간 데이터가 <strong>성공적으로 동기화</strong>되었습니다.";
+                text.innerHTML = "데이터가 <strong>성공적으로 동기화</strong>되었습니다.";
                 setTimeout(() => {
                     banner.style.display = 'none';
                 }, 3500);
 
             } catch (e) {
-                console.warn("구글 시트 연동 중 실패로 인하여 안전 데모 데이터로 구동합니다:", e);
+                console.warn("연동 실패로 인하여 안전 데모 데이터로 구동합니다:", e);
                 events = [...demoEvents];
                 posts = [...demoPosts];
                 
                 icon.className = "fa-solid fa-circle-info";
-                text.innerHTML = "데모 모드로 안전하게 작동 중입니다. 구글 시트에 탭 이름과 열 이름이 맞는지 확인해 보세요.";
+                text.innerHTML = "데모 모드로 안전하게 작동 중입니다.";
             }
             render();
         }
@@ -719,7 +719,7 @@
                 return true;
             } catch (error) {
                 console.error("데이터 송신 도중 실패했습니다:", error);
-                alert("구글 시트 전송 중 오류 발생. 연결을 확인해 주세요.");
+                alert("전송 중 오류 발생. 연결을 확인해 주세요.");
                 return false;
             }
         }
