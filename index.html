@@ -110,17 +110,27 @@
         
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .cal-month-label { font-size: 14px; font-weight: 700; color: var(--text); }
-        .cal-nav { display: flex; gap: 4px; }
+        .cal-nav { display: flex; gap: 8px; align-items: center; }
         .cal-nav button { 
-            background: var(--sky4); border: 1px solid var(--border2); 
-            color: var(--text2); width: 28px; height: 28px; font-size: 11px; 
-            cursor: pointer; border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; transition: all .2s; 
+            background: #e8f7fb; 
+            border: none; 
+            color: var(--accent); 
+            width: 32px; 
+            height: 32px; 
+            font-size: 11px; 
+            cursor: pointer; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(42, 138, 170, 0.08);
         }
         .cal-nav button:hover {
-            background: var(--sky3);
-            border-color: var(--accent);
-            color: var(--accent2);
+            background: var(--accent);
+            color: #fff;
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(42, 138, 170, 0.2);
         }
 
         .cal-grid { 
@@ -287,7 +297,10 @@
                 <div class="section-label">Schedule</div>
                 <div class="cal-header">
                     <div id="cal-month-label" style="font-weight:700">2026년 6월</div>
-                    <div style="display:flex; gap:5px;"><button onclick="changeMonth(-1)">‹</button><button onclick="changeMonth(1)">›</button></div>
+                    <div class="cal-nav">
+                        <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
                 </div>
                 
                 <div class="cal-outer-wrap">
