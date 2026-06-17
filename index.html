@@ -87,16 +87,29 @@
             width: 100%;
             overflow-x: auto; 
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 15px; 
+            padding-bottom: 12px; 
             margin-top: 10px;
         }
+        @media(min-width: 601px) {
+            .cal-outer-wrap {
+                overflow-x: visible;
+                padding-bottom: 0;
+            }
+        }
+        
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
         .cal-month-label { font-size: 16px; font-weight: 700; color: var(--text); }
         .cal-nav { display: flex; gap: 6px; }
         .cal-nav button { 
             background: var(--sky4); border: 1px solid var(--border2); 
-            color: var(--text2); padding: 4px 12px; font-size: 13px; 
-            cursor: pointer; border-radius: 20px; transition: all .2s; 
+            color: var(--text2); width: 32px; height: 32px; font-size: 12px; 
+            cursor: pointer; border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; transition: all .2s; 
+        }
+        .cal-nav button:hover {
+            background: var(--sky3);
+            border-color: var(--accent);
+            color: var(--accent2);
         }
 
         .cal-grid { 
@@ -105,25 +118,37 @@
             gap: 6px; 
             min-width: 810px; 
         }
+        @media(min-width: 601px) {
+            .cal-grid {
+                grid-template-columns: repeat(7, 1fr);
+                min-width: 100%;
+            }
+        }
+        
         .cal-dow { font-size: 11px; color: var(--text3); text-align: center; padding: 6px 0; font-weight: 700; }
+        
         .cal-day { 
-            background: var(--sky4); border-radius: 8px; min-height: 80px; 
-            padding: 8px 6px; font-size: 12px; color: var(--text3); 
-            border: 1px solid transparent; transition: background 0.15s; 
+            background: var(--sky4); border-radius: 12px; min-height: 85px; 
+            padding: 10px 8px; font-size: 12px; color: var(--text3); 
+            border: 1px solid transparent; transition: all 0.25s; 
             display: flex; flex-direction: column; gap: 4px;
         }
         .cal-day.today { background: #e8f7fb; border-color: var(--accent); }
         .cal-day.today .day-num { color: var(--accent2); font-weight: 700; }
-        .cal-day.other-month { opacity: 0.35; }
-        .cal-day.has-event { background: #fff; border: 1px solid var(--accent); cursor: pointer; }
-        .cal-day.has-event:hover { background: var(--sky3); }
-        .day-num { font-size: 11px; display: block; margin-bottom: 2px; }
+        .cal-day.other-month { opacity: 0.25; pointer-events: none; }
+        .cal-day.has-event { background: #fff; border: 1px solid var(--border2); cursor: pointer; }
+        .cal-day.has-event:hover { 
+            background: #fff; 
+            border-color: var(--accent); 
+            box-shadow: 0 4px 12px rgba(42, 138, 170, 0.12);
+        }
+        .day-num { font-size: 12px; font-weight: 500; display: block; margin-bottom: 2px; color: var(--text3); }
 
         .event-dot { 
-            font-size: 10px; color: var(--accent);
+            font-size: 10px; color: var(--accent2);
             line-height: 1.3;
-            background: rgba(42, 138, 170, 0.08); 
-            padding: 3px 5px; 
+            background: rgba(42, 138, 170, 0.06); 
+            padding: 4px 6px; 
             border-radius: 4px; 
             border-left: 2px solid var(--accent);
             display: -webkit-box;
@@ -132,21 +157,25 @@
             overflow: hidden;
             word-break: break-all;
             white-space: normal;
+            font-weight: 500;
         }
 
         .sched-list { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
         .sched-item { 
-            background: #fff; border: 1px solid var(--border); padding: 1rem; 
-            border-radius: 12px; cursor: pointer; display: grid; 
-            grid-template-columns: 55px 1fr auto; align-items: center; gap: 1rem;
-            position: relative; transition: all 0.2s;
+            background: #fff; border: 1px solid var(--border); padding: 1.5rem 2rem; 
+            border-radius: 16px; cursor: pointer; display: grid; 
+            grid-template-columns: 80px 1fr auto; align-items: center; gap: 1.5rem;
+            position: relative; transition: all 0.25s;
         }
-        .sched-item:hover { border-color: var(--accent); box-shadow: 0 4px 15px rgba(42,138,170,0.1); }
-        .si-date { text-align: center; line-height: 1.3; }
-        .si-date strong { display: block; font-size: 20px; font-weight: 300; color: var(--accent2); }
-        .si-date span { font-size: 11px; color: var(--text3); }
-        .si-info h4 { font-size: 14px; margin-bottom: 2px; font-weight: 500; }
-        .si-info p { font-size: 12px; color: var(--text3); }
+        .sched-item:hover { 
+            border-color: var(--accent); 
+            box-shadow: 0 6px 20px rgba(42,138,170,0.12); 
+        }
+        .si-date { text-align: left; line-height: 1.3; min-width: 70px; }
+        .si-date strong { display: block; font-size: 26px; font-weight: 300; color: var(--accent2); }
+        .si-date span { font-size: 12px; color: var(--text3); white-space: nowrap; }
+        .si-info h4 { font-size: 16px; margin-bottom: 6px; font-weight: 700; color: var(--text); }
+        .si-info p { font-size: 13px; color: var(--text3); }
 
         /* Board 디자인 */
         .board-list { display: flex; flex-direction: column; gap: 8px; }
@@ -415,12 +444,16 @@
                 return;
             }
 
-            list.innerHTML = filtered.map(e => `
+            list.innerHTML = filtered.map(e => {
+                const dateObj = new Date(e.date);
+                const dayOfWeek = DOW[dateObj.getDay()];
+                return `
                 <div class="sched-item" onclick='openDetail(${events.indexOf(e)}, "event")'>
-                    <div class="si-date"><strong>${e.date.split('-')[2]}</strong><span>${cm+1}월</span></div>
-                    <div class="si-info"><h4>${e.title}</h4><p>${e.venue || ''}</p></div>
+                    <div class="si-date"><strong>${e.date.split('-')[2]}</strong><span>${cm+1}월 (${dayOfWeek})</span></div>
+                    <div class="si-info"><h4>${e.title}</h4><p>${e.venue || ''} | ${e.time || ''}</p></div>
                     <div class="si-tag">${e.type==='perf'?'공연':'행사'}</div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
         }
 
         function renderBoardList() {
