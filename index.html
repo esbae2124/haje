@@ -493,7 +493,7 @@
 
     <script>
         // 기억해둔 구글 시트 연동 URL 탑재
-        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyFBJTfxH0IaGB7zwTh7NuLP8fIAexoZ4xa8Hn9cRg-2rkPk1PSBTxkivBKoYK2JA5f0A/exec";
+        const GAS_WEBAPP_URL = "hhttps://script.google.com/macros/s/AKfycbxVnTt_E4upLM5JRxD1lLqh0XSDB3D40BZ9v3uLp-SHb-qLpGNzex6BcEweVBYuO6KMiw/exec";
         
         let events = [], posts = [], isAdmin = false;
         let currentEditIndex = null, currentEditType = null;
@@ -564,14 +564,16 @@
             render();
 
             if (!GAS_WEBAPP_URL) {
-                if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #f1c40f; font-size: 8px;"></i> 로컬 모드`;
+                if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #f1c40f; font-size: 8px;"></i> 캐시 모드`;
                 return;
             }
 
             try {
                 const res = await fetch(GAS_WEBAPP_URL);
                 const data = await res.json();
-                if (data && data.events && data.posts) {
+                
+                // [안전 장치 추가] 서버 수신 데이터 구조 및 알갱이가 비어있지 않고 온전할 때만 로컬스토리지를 갱신
+                if (data && Array.isArray(data.events) && Array.isArray(data.posts) && data.events.length > 0 && data.posts.length > 0) {
                     events = data.events;
                     posts = data.posts;
                     localStorage.setItem('haje_events', JSON.stringify(events));
@@ -580,9 +582,14 @@
                     if (statusEl) {
                         statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #2ecc71; font-size: 8px;"></i> 데이터 연동 완료`;
                     }
+                } else {
+                    console.warn("구글 연동 데이터 포맷 비정상 수신. 로컬 캐시를 보호하기 위해 덮어쓰기 무시.");
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #f1c40f; font-size: 8px;"></i> 캐시 로드 완료`;
+                    }
                 }
             } catch (e) {
-                console.warn("구글 연동 불가:", e);
+                console.warn("구글 연동 불가, 기저 안전 캐시 유지:", e);
                 if (statusEl) {
                     statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #e74c3c; font-size: 8px;"></i> 오프라인 모드`;
                 }
@@ -597,9 +604,13 @@
             if (!GAS_WEBAPP_URL) return;
 
             try {
+                // 전송 헤더를 plain으로 명시하여 no-cors 상황에서도 페이로드가 유실되지 않고 GAS에 물리적으로 완벽히 닿도록 조율
                 await fetch(GAS_WEBAPP_URL, {
                     method: 'POST',
                     mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
                     body: JSON.stringify({ events, posts })
                 });
                 triggerToast("데이터 연동 성공!");
