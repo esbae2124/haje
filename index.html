@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- OpenGraph 메타 데이터 설정 -->
     <meta property="og:title" content="하제 — 내일을 향해 나아가는 이야기">
     <meta property="og:description" content="독립 예술 극단 '하제'의 공식 웹사이트.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&h=630&q=80">
@@ -14,7 +13,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,12 +83,11 @@
         .hero-title { font-size: 26px; font-weight: 300; margin-bottom: 1rem; color: var(--text); }
         .hero-title strong { font-weight: 700; color: var(--accent); }
 
-        /* [핵심 수정] 캘린더 스크롤 및 너비 고정 */
         .cal-outer-wrap {
             width: 100%;
-            overflow-x: auto; /* 가로 스크롤 허용 */
+            overflow-x: auto; 
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 15px; /* 스크롤바 공간 */
+            padding-bottom: 15px; 
             margin-top: 10px;
         }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
@@ -104,10 +101,9 @@
 
         .cal-grid { 
             display: grid; 
-            /* [수정] 7일 동일 너비로 고정 (각 110px씩 총 약 800px 내외) */
             grid-template-columns: repeat(7, 110px); 
             gap: 6px; 
-            min-width: 810px; /* 전체 최소 너비 확보 */
+            min-width: 810px; 
         }
         .cal-dow { font-size: 11px; color: var(--text3); text-align: center; padding: 6px 0; font-weight: 700; }
         .cal-day { 
@@ -123,7 +119,6 @@
         .cal-day.has-event:hover { background: var(--sky3); }
         .day-num { font-size: 11px; display: block; margin-bottom: 2px; }
 
-        /* [핵심 수정] 일정 제목 8-9글자 대응 및 말줄임 */
         .event-dot { 
             font-size: 10px; color: var(--accent);
             line-height: 1.3;
@@ -131,16 +126,14 @@
             padding: 3px 5px; 
             border-radius: 4px; 
             border-left: 2px solid var(--accent);
-            /* 한글 8~9자 정도를 위한 텍스트 처리 */
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* 최대 2줄 표시 */
+            -webkit-line-clamp: 2; 
             -webkit-box-orient: vertical;
             overflow: hidden;
             word-break: break-all;
             white-space: normal;
         }
 
-        /* 일정 목록 리스트 */
         .sched-list { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
         .sched-item { 
             background: #fff; border: 1px solid var(--border); padding: 1rem; 
@@ -155,7 +148,20 @@
         .si-info h4 { font-size: 14px; margin-bottom: 2px; font-weight: 500; }
         .si-info p { font-size: 12px; color: var(--text3); }
 
-        /* 관리자 기능 스타일 */
+        /* Board 디자인 */
+        .board-list { display: flex; flex-direction: column; gap: 8px; }
+        .board-item { 
+            display: grid; grid-template-columns: 50px 1fr 60px; 
+            align-items: center; gap: 0.75rem; padding: 0.9rem 1rem; 
+            background: var(--sky4); border-radius: 10px; cursor: pointer;
+            border: 1px solid transparent; transition: all 0.15s;
+        }
+        .board-item:hover { background: #fff; border-color: var(--border2); }
+        .b-cat { font-size: 11px; font-weight: 700; color: var(--accent); }
+        .b-title { font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .b-date { font-size: 11px; color: var(--text3); text-align: right; }
+
+        /* 관리자 전용 권한 제어 */
         .admin-only { display: none; }
         body.admin-mode .admin-only { display: block; }
         .add-btn { width: 100%; background: var(--sky4); border: 1px dashed var(--border2); color: var(--text3); padding: 12px; font-size: 13px; cursor: pointer; border-radius: 10px; margin-top: 1rem; }
@@ -169,7 +175,13 @@
         .popup-overlay { position: fixed; inset: 0; background: rgba(20,60,80,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; }
         .popup-box { background: #fff; padding: 2.2rem; border-radius: 20px; max-width: 440px; width: 100%; position: relative; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(42,138,170,0.15); }
         .popup-close { position: absolute; top: 1rem; right: 1rem; cursor: pointer; background: var(--sky4); border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .popup-tag { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em; }
+        .popup-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .popup-date { font-size: 13px; color: var(--text3); margin-bottom: 1rem; }
         .popup-desc { background: var(--sky4); padding: 1.25rem; border-radius: 12px; font-size: 13.5px; line-height: 1.7; color: var(--text2); margin: 15px 0; white-space: pre-wrap; }
+        .popup-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem; }
+        .pm-item label { font-size: 10px; color: var(--text3); font-weight: 700; display: block; }
+        .pm-item span { font-size: 13px; color: var(--text); }
 
         .admin-trigger { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90; background: #fff; border: 1px solid var(--border2); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 18px; }
         .toast-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(26, 58, 69, 0.95); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; z-index: 300; display: none; }
@@ -219,7 +231,7 @@
             <section id="about" class="card">
                 <div class="section-label">About</div>
                 <h1 class="hero-title"><strong>하제</strong> — 내일을 향해<br>나아가는 이야기</h1>
-                <p>과거의 장벽을 부수고 내일을 만드는 독립 예술가들의 공간입니다.</p>
+                <p>오늘의 경계에서 내일을 꿈꾸는 독립 예술 극단 '하제'. 나이와 경력의 장벽을 부수고, 파도처럼 끊임없이 변하는 무대 위에서 예술가 본인들의 가치 있는 내일을 함께 만들어갑니다.</p>
             </section>
 
             <section id="schedule" class="card">
@@ -229,7 +241,6 @@
                     <div style="display:flex; gap:5px;"><button onclick="changeMonth(-1)">‹</button><button onclick="changeMonth(1)">›</button></div>
                 </div>
                 
-                <!-- [수정] 캘린더 가로 스크롤을 위한 래퍼 추가 -->
                 <div class="cal-outer-wrap">
                     <div class="cal-grid" id="cal-grid"></div>
                 </div>
@@ -239,8 +250,9 @@
                     <div class="form-box" id="event-form">
                         <div class="form-row"><label>날짜</label><input type="date" id="evt-date"></div>
                         <div class="form-row"><label>제목</label><input type="text" id="evt-title"></div>
-                        <div class="form-row"><label>분류</label><select id="evt-type"><option value="perf">공연</option><option value="event">행사</option></select></div>
+                        <div class="form-row"><label>분류</label><select id="evt-type"><option value="perf">공연</option><option value="event">행사</option><option value="workshop">워크숍</option></select></div>
                         <div class="form-row"><label>장소</label><input type="text" id="evt-venue"></div>
+                        <div class="form-row"><label>시간</label><input type="text" id="evt-time" placeholder="예: 오후 7:30"></div>
                         <div class="form-row"><label>설명</label><textarea id="evt-desc"></textarea></div>
                         <button class="form-submit" onclick="submitEvent()">등록하기</button>
                     </div>
@@ -252,13 +264,13 @@
                 <div class="section-label">Board</div>
                 <div class="admin-only"><button class="add-btn" onclick="toggleForm('post-form')">＋ 공지글 작성</button>
                     <div class="form-box" id="post-form">
-                        <div class="form-row"><label>태그</label><input type="text" id="post-cat" placeholder="공지, 소식 등"></div>
+                        <div class="form-row"><label>태그</label><input type="text" id="post-cat" placeholder="공지, 소식, 모집 등"></div>
                         <div class="form-row"><label>제목</label><input type="text" id="post-title"></div>
                         <div class="form-row"><label>내용</label><textarea id="post-desc"></textarea></div>
                         <button class="form-submit" onclick="submitPost()">등록하기</button>
                     </div>
                 </div>
-                <div id="board-list"></div>
+                <div class="board-list" id="board-list"></div>
             </section>
         </div>
 
@@ -279,12 +291,23 @@
     </div>
 
     <script>
-        const SHEET_BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTYWLCB8EZfx6d1_vL-FV-vUD5dteaavxv4OvUiTYWypIMWRK0izL2PhZfHeZDMm6qpmvvS1cC7Trcz/pub";
-        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzGZA1PuVNGWR0XRN_KzkQIocK56PDKzc5gVfeOYnd2p_2yihVWpPid7smvcvWmZ8jWLw/exec";
+        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyFBJTfxH0IaGB7zwTh7NuLP8fIAexoZ4xa8Hn9cRg-2rkPk1PSBTxkivBKoYK2JA5f0A/exec";
         
-        let events = [], posts = [], isAdmin = false, currentPopupItem = null;
+        let events = [], posts = [], isAdmin = false;
+        let currentEditIndex = null, currentEditType = null;
         let cy = 2026, cm = 5;
         const DOW = ['일','월','화','수','목','금','토'];
+
+        // 로딩 실패 시를 대비한 예비 데모 데이터
+        const demoEvents = [
+            {date:'2026-06-07',title:'《파도》 창단 기념공연',type:'perf',venue:'소극장 하제',time:'오후 7:30',desc:'경력과 나이의 장벽을 허물고 마침내 시작하는 극단 하제의 찬란한 창단 정기 레퍼토리 공연입니다.'},
+            {date:'2026-06-07',title:'관객과의 대화 (GV)',type:'event',venue:'로비 라운지',time:'오후 9:00',desc:'공연 종료 후 약 30분간 배우와 연출진이 들려주는 창단 비하인드 스토리.'},
+            {date:'2026-06-14',title:'오픈 연극 워크숍',type:'workshop',venue:'극단 하제 연습실',time:'오전 10:00',desc:'연극 무대에 서보고 싶었던 모든 사람들을 위한 일일 신체극 가이드 워크숍.'}
+        ];
+
+        const demoPosts = [
+            {cat:'공지',title:'독립극단 하제(HAJE) 창단 선언문 및 공식 홈페이지 오픈',desc:'오늘의 경계를 깨고 새로운 무대를 만들어가는 저희 극단의 첫걸음을 알립니다.',date:'06.10'}
+        ];
 
         function triggerToast(msg) { const t=document.getElementById('toast-box'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
         
@@ -298,26 +321,71 @@
             if (statusEl) {
                 statusEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="color: var(--accent); font-size: 8px;"></i> 데이터 연동 중`;
             }
+            
+            // 1단계: 로컬 캐시에서 먼저 빠르게 로드
+            const cachedEvs = localStorage.getItem('haje_events');
+            const cachedPosts = localStorage.getItem('haje_posts');
+            if (cachedEvs) events = JSON.parse(cachedEvs);
+            if (cachedPosts) posts = JSON.parse(cachedPosts);
+
+            if (events.length === 0) {
+                events = [...demoEvents];
+                posts = [...demoPosts];
+            }
+            render();
+
+            // 2단계: 구글 시트의 A1 셀로부터 최신 데이터 무한 동기화
+            if (!GAS_WEBAPP_URL) {
+                if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #f1c40f; font-size: 8px;"></i> 로컬 모드`;
+                return;
+            }
+
             try {
-                const res = await new Promise((resolve, reject) => { Papa.parse(SHEET_BASE_URL+"?gid=0&output=csv", { download:true, header:true, complete:resolve, error:reject }); });
-                events = res.data.filter(r => r.date && r.title);
-                if (statusEl) {
-                    statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #2ecc71; font-size: 8px;"></i> 데이터 연동 완료`;
+                const res = await fetch(GAS_WEBAPP_URL);
+                const data = await res.json();
+                if (data && data.events && data.posts) {
+                    events = data.events;
+                    posts = data.posts;
+                    localStorage.setItem('haje_events', JSON.stringify(events));
+                    localStorage.setItem('haje_posts', JSON.stringify(posts));
+                    render();
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #2ecc71; font-size: 8px;"></i> 데이터 연동 완료`;
+                    }
                 }
-            } catch (e) { 
-                triggerToast("데이터 연동 지연"); 
+            } catch (e) {
+                console.warn("구글 연동 불가, 로컬 캐시 사용:", e);
                 if (statusEl) {
                     statusEl.innerHTML = `<i class="fa-solid fa-circle" style="color: #e74c3c; font-size: 8px;"></i> 오프라인 모드`;
                 }
             }
+        }
+
+        // 전체 데이터를 구글 시트 A1 셀에 완벽하게 덮어쓰기 하는 동기화 로직
+        async function syncToServer() {
+            localStorage.setItem('haje_events', JSON.stringify(events));
+            localStorage.setItem('haje_posts', JSON.stringify(posts));
             render();
+
+            if (!GAS_WEBAPP_URL) return;
+
+            try {
+                await fetch(GAS_WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ events, posts })
+                });
+                triggerToast("데이터 연동 성공!");
+            } catch (e) {
+                console.error("동기화 오류:", e);
+                triggerToast("오프라인 상태로 로컬에만 저장됨");
+            }
         }
 
         function render() {
             const grid = document.getElementById('cal-grid');
-            const list = document.getElementById('sched-list');
             document.getElementById('cal-month-label').textContent = `${cy}년 ${cm+1}월`;
-            grid.innerHTML = ''; list.innerHTML = '';
+            grid.innerHTML = '';
 
             DOW.forEach(d => { grid.innerHTML += `<div class="cal-dow">${d}</div>`; });
             const first = new Date(cy, cm, 1).getDay();
@@ -328,40 +396,70 @@
             for(let d=1; d<=last; d++) {
                 const key = `${cy}-${String(cm+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const dayEvs = events.filter(e => e.date === key);
-                let html = `<div class="cal-day ${dayEvs.length?'has-event':''}" onclick="${dayEvs.length?`openDetail(${JSON.stringify(dayEvs[0]).replace(/"/g,'&quot;')})`:''}">
+                let html = `<div class="cal-day ${dayEvs.length?'has-event':''}" onclick="${dayEvs.length?`openDetail(${events.indexOf(dayEvs[0])}, 'event')`:''}">
                                 <span class="day-num">${d}</span>`;
                 dayEvs.forEach(e => { html += `<span class="event-dot">${e.title}</span>`; });
                 html += `</div>`;
                 grid.innerHTML += html;
             }
             renderScheduleList();
+            renderBoardList();
         }
 
         function renderScheduleList() {
             const list = document.getElementById('sched-list');
-            const filtered = events.filter(e => e.date.startsWith(`${cy}-${String(cm+1).padStart(2,'0')}`)).sort((a,b)=>a.date.localeCompare(b.date));
+            const filtered = events.filter(e => e.date && e.date.startsWith(`${cy}-${String(cm+1).padStart(2,'0')}`)).sort((a,b)=>a.date.localeCompare(b.date));
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `<div style="text-align:center; padding:1.5rem; font-size:13px; color:var(--text3);">이번 달 등록된 스케줄이 없습니다.</div>`;
+                return;
+            }
+
             list.innerHTML = filtered.map(e => `
-                <div class="sched-item" onclick='openDetail(${JSON.stringify(e).replace(/'/g,"&#39;")})'>
+                <div class="sched-item" onclick='openDetail(${events.indexOf(e)}, "event")'>
                     <div class="si-date"><strong>${e.date.split('-')[2]}</strong><span>${cm+1}월</span></div>
                     <div class="si-info"><h4>${e.title}</h4><p>${e.venue || ''}</p></div>
                     <div class="si-tag">${e.type==='perf'?'공연':'행사'}</div>
                 </div>`).join('');
         }
 
-        function openDetail(item) {
-            currentPopupItem = JSON.parse(JSON.stringify(item));
+        function renderBoardList() {
+            const list = document.getElementById('board-list');
+            if (posts.length === 0) {
+                list.innerHTML = `<div style="text-align:center; padding:1.5rem; font-size:13px; color:var(--text3);">작성된 소식이 없습니다.</div>`;
+                return;
+            }
+            list.innerHTML = posts.map(p => `
+                <div class="board-item" onclick="openDetail(${posts.indexOf(p)}, 'board')">
+                    <span class="b-cat">[${p.cat || '공지'}]</span>
+                    <span class="b-title">${p.title}</span>
+                    <span class="b-date">${p.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function openDetail(index, type) {
+            currentEditIndex = index;
+            currentEditType = type;
             renderPopupViewMode();
             document.getElementById('popup').style.display='flex';
         }
 
         function renderPopupViewMode() {
-            const isEvent = !!currentPopupItem.venue;
+            const item = currentEditType === 'event' ? events[currentEditIndex] : posts[currentEditIndex];
+            const isEvent = currentEditType === 'event';
             document.getElementById('p-content-box').innerHTML = `
                 <button class="popup-close" onclick="closePopup()">✕</button>
                 <div class="popup-tag">${isEvent?'Schedule':'Board'}</div>
-                <div class="popup-title">${currentPopupItem.title}</div>
-                <div class="popup-date">${currentPopupItem.date}</div>
-                <div class="popup-desc">${currentPopupItem.desc || ''}</div>
+                <div class="popup-title">${item.title}</div>
+                <div class="popup-date">${item.date}</div>
+                <div class="popup-desc">${item.desc || ''}</div>
+                ${isEvent ? `
+                    <div class="popup-meta">
+                        <div class="pm-item"><label>장소</label><span>${item.venue || '미정'}</span></div>
+                        <div class="pm-item"><label>시간</label><span>${item.time || '시간 미정'}</span></div>
+                    </div>
+                ` : ''}
                 <div class="admin-only" style="display:${isAdmin?'flex':'none'}; gap:8px; margin-top:20px;">
                     <button class="form-submit" onclick="switchPopupEditMode()">수정하기</button>
                     <button class="form-submit" onclick="deleteItemDirectly()" style="background:#ff6b6b">삭제하기</button>
@@ -369,37 +467,107 @@
         }
 
         function switchPopupEditMode() {
-            const isEv = !!currentPopupItem.venue;
+            const item = currentEditType === 'event' ? events[currentEditIndex] : posts[currentEditIndex];
+            const isEvent = currentEditType === 'event';
             document.getElementById('p-content-box').innerHTML = `
                 <button class="popup-close" onclick="closePopup()">✕</button>
                 <div class="form-box show" style="background:none; border:none; padding:0;">
-                    <div class="form-row"><label>제목</label><input type="text" id="edit-title" value="${currentPopupItem.title}"></div>
-                    <div class="form-row"><label>날짜</label><input type="text" id="edit-date" value="${currentPopupItem.date}"></div>
-                    ${isEv?`<div class="form-row"><label>장소</label><input type="text" id="edit-venue" value="${currentPopupItem.venue}"></div>`:''}
-                    <div class="form-row"><label>설명</label><textarea id="edit-desc" style="height:100px">${currentPopupItem.desc || ''}</textarea></div>
-                    <div class="form-actions"><button class="form-submit" onclick="submitEditDirectly()">저장</button><button class="form-submit" onclick="renderPopupViewMode()" style="background:#eee;color:#333">취소</button></div>
+                    <div class="form-row"><label>제목</label><input type="text" id="edit-title" value="${item.title}"></div>
+                    <div class="form-row"><label>날짜 / 일자</label><input type="text" id="edit-date" value="${item.date}"></div>
+                    ${isEvent ? `
+                        <div class="form-row"><label>장소</label><input type="text" id="edit-venue" value="${item.venue || ''}"></div>
+                        <div class="form-row"><label>시간</label><input type="text" id="edit-time" value="${item.time || ''}"></div>
+                    ` : `
+                        <div class="form-row"><label>태그 (공지/소식 등)</label><input type="text" id="edit-cat" value="${item.cat || ''}"></div>
+                    `}
+                    <div class="form-row"><label>내용 설명</label><textarea id="edit-desc" style="height:100px">${item.desc || ''}</textarea></div>
+                    <div class="form-actions" style="display:flex; gap:8px;">
+                        <button class="form-submit" onclick="submitEditDirectly()">저장</button>
+                        <button class="form-submit" onclick="renderPopupViewMode()" style="background:#eee;color:#333">취소</button>
+                    </div>
                 </div>`;
         }
 
         async function submitEditDirectly() {
-            const newData = { title: document.getElementById('edit-title').value, date: document.getElementById('edit-date').value, desc: document.getElementById('edit-desc').value };
-            if(currentPopupItem.venue) newData.venue = document.getElementById('edit-venue').value;
-            closePopup(); triggerToast("수정 사항을 전송 중입니다...");
-            const action = currentPopupItem.venue ? 'editEvent' : 'editPost';
-            if(await sendToGas(action, { old: currentPopupItem, new: newData })) { triggerToast("수정 완료"); loadData(); }
+            const isEvent = currentEditType === 'event';
+            const title = document.getElementById('edit-title').value;
+            const date = document.getElementById('edit-date').value;
+            const desc = document.getElementById('edit-desc').value;
+
+            if (isEvent) {
+                events[currentEditIndex] = {
+                    date, title, desc,
+                    type: events[currentEditIndex].type,
+                    venue: document.getElementById('edit-venue').value,
+                    time: document.getElementById('edit-time').value
+                };
+            } else {
+                posts[currentEditIndex] = {
+                    date, title, desc,
+                    cat: document.getElementById('edit-cat').value
+                };
+            }
+
+            closePopup();
+            triggerToast("데이터 반영 중...");
+            await syncToServer();
         }
 
-        async function deleteItemDirectly() {
+        function deleteItemDirectly() {
             triggerConfirm("정말로 삭제하시겠습니까?", async () => {
-                closePopup(); triggerToast("삭제 중...");
-                const action = currentPopupItem.venue ? 'deleteEvent' : 'deletePost';
-                if(await sendToGas(action, currentPopupItem)) { triggerToast("삭제 완료"); loadData(); }
+                closePopup();
+                triggerToast("삭제 중...");
+                if (currentEditType === 'event') {
+                    events.splice(currentEditIndex, 1);
+                } else {
+                    posts.splice(currentEditIndex, 1);
+                }
+                await syncToServer();
             });
         }
 
-        async function sendToGas(action, payload) {
-            try { await fetch(GAS_WEBAPP_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({action, payload}) }); return true; } 
-            catch(e) { triggerToast("전송 오류"); return false; }
+        // 스케줄 추가 및 등록
+        async function submitEvent() {
+            const date = document.getElementById('evt-date').value;
+            const title = document.getElementById('evt-title').value.trim();
+            const type = document.getElementById('evt-type').value;
+            const venue = document.getElementById('evt-venue').value.trim();
+            const time = document.getElementById('evt-time').value.trim();
+            const desc = document.getElementById('evt-desc').value.trim();
+
+            if (!date || !title) {
+                triggerToast("날짜와 제목을 입력해 주세요.");
+                return;
+            }
+
+            events.push({ date, title, type, venue, time, desc });
+            document.getElementById('event-form').classList.remove('show');
+            ['evt-date', 'evt-title', 'evt-venue', 'evt-time', 'evt-desc'].forEach(id => document.getElementById(id).value = '');
+            
+            triggerToast("새 스케줄 등록 중...");
+            await syncToServer();
+        }
+
+        // 공지 등록
+        async function submitPost() {
+            const cat = document.getElementById('post-cat').value.trim() || "공지";
+            const title = document.getElementById('post-title').value.trim();
+            const desc = document.getElementById('post-desc').value.trim();
+
+            if (!title) {
+                triggerToast("제목을 입력해 주세요.");
+                return;
+            }
+
+            const today = new Date();
+            const dateStr = `${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+
+            posts.unshift({ cat, title, desc, date: dateStr });
+            document.getElementById('post-form').classList.remove('show');
+            ['post-cat', 'post-title', 'post-desc'].forEach(id => document.getElementById(id).value = '');
+            
+            triggerToast("새 소식 등록 중...");
+            await syncToServer();
         }
 
         function handleAdminTrigger() {
