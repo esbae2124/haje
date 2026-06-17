@@ -1,52 +1,474 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>독립극단 하제 (haje)</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
-    <header>
-        <div class="logo">haje</div>
-        <nav>
-            <a href="#about">극단소개</a>
-            <a href="#schedule">공연일정</a>
-            <a href="#notice">공지사항</a>
-        </nav>
-    </header>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#7bc4d8;--sky2:#a8d8e8;--sky3:#c8e8f2;--sky4:#e0f2f8;
+  --wave-line:#fff;
+  --surface:#fff;--surface2:#f4fbfd;
+  --border:#d0ecf4;--border2:#b8e0ec;
+  --text:#1a3a45;--text2:#3a6a7a;--text3:#6a9aaa;
+  --accent:#2a8aaa;--accent2:#1a6a88;
+}
+body{background:var(--sky);font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:15px;color:var(--text)}
 
-    <section id="hero">
-        <div class="hero-content">
-            <h1>독립극단 하제</h1>
-            <p>우리들의 첫 번째 이야기가 시작됩니다.</p>
+.wave-bg{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  overflow:hidden;z-index:0;
+}
+.wave-bg svg{width:100%;height:100%;position:absolute;top:0;left:0}
+
+.site-wrap{
+  max-width:720px;margin:0 auto;
+  position:relative;z-index:1;
+  padding:0 0 4rem;
+}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(168,216,232,0.5);
+}
+.nav-inner{
+  max-width:720px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:56px;
+}
+.nav-logo{
+  font-size:18px;font-weight:600;color:var(--accent2);
+  letter-spacing:0.05em;
+}
+.nav-logo span{font-size:11px;font-weight:400;color:var(--text3);margin-left:.5rem;letter-spacing:0.1em}
+.nav-links{display:flex;list-style:none;gap:0}
+.nav-links li a{
+  display:block;padding:0 1rem;line-height:56px;
+  font-size:12px;letter-spacing:0.12em;
+  color:var(--text2);text-decoration:none;cursor:pointer;
+  transition:color .2s;position:relative;
+}
+.nav-links li a::after{
+  content:'';position:absolute;bottom:0;left:1rem;right:1rem;
+  height:2px;background:var(--accent);
+  transform:scaleX(0);transition:transform .2s;
+}
+.nav-links li a:hover,
+.nav-links li a.active{color:var(--accent2)}
+.nav-links li a.active::after{transform:scaleX(1)}
+
+.section-wrap{padding:2rem 1.25rem 0}
+
+.card{
+  background:var(--surface);
+  border-radius:16px;
+  border:1px solid rgba(168,216,232,0.6);
+  box-shadow:0 4px 24px rgba(42,138,170,0.08);
+  padding:2rem;
+  margin-bottom:1.25rem;
+}
+
+.section-label{
+  font-size:11px;letter-spacing:0.2em;color:var(--text3);
+  margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+
+.hero-title{
+  font-size:26px;font-weight:300;color:var(--text);
+  line-height:1.5;margin-bottom:.75rem;letter-spacing:0.03em;
+}
+.hero-title strong{font-weight:600;color:var(--accent2)}
+.hero-sub{font-size:14px;color:var(--text2);line-height:1.9}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.25rem}
+.about-item{
+  background:var(--sky4);
+  border-radius:10px;
+  border:1px solid var(--border);
+  padding:1rem;
+}
+.about-item h4{font-size:11px;letter-spacing:0.15em;color:var(--text3);margin-bottom:.4rem}
+.about-item p{font-size:13px;color:var(--text2);line-height:1.7}
+
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.cal-month-label{font-size:15px;font-weight:500;color:var(--text)}
+.cal-nav{display:flex;gap:.4rem}
+.cal-nav button{
+  background:var(--sky4);border:1px solid var(--border2);
+  color:var(--text2);padding:5px 14px;font-size:12px;
+  cursor:pointer;border-radius:20px;transition:all .2s;
+}
+.cal-nav button:hover{background:var(--sky3);color:var(--accent2)}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem}
+.cal-dow{font-size:11px;letter-spacing:0.1em;color:var(--text3);text-align:center;padding:6px 0}
+.cal-day{
+  background:var(--sky4);border-radius:8px;
+  min-height:60px;padding:6px;
+  font-size:12px;color:var(--text3);
+  transition:background .15s;
+  border:1px solid transparent;
+}
+.cal-day.today{background:#e8f7fb;border-color:var(--accent)}
+.cal-day.today .day-num{color:var(--accent2);font-weight:600}
+.cal-day.other-month{opacity:0.35}
+.cal-day.has-event{cursor:pointer;background:#fff;border-color:var(--border2)}
+.cal-day.has-event:hover{background:var(--sky3);border-color:var(--accent)}
+.day-num{font-size:12px;display:block;margin-bottom:3px}
+.event-dot{
+  display:block;font-size:9px;
+  background:rgba(42,138,170,0.1);
+  color:var(--accent2);
+  border-left:2px solid var(--accent);
+  padding:2px 4px;border-radius:0 3px 3px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:2px;
+}
+
+.sched-list{display:flex;flex-direction:column;gap:.6rem;margin-top:1.25rem}
+.sched-item{
+  background:var(--surface);
+  border-radius:12px;border:1px solid var(--border);
+  padding:1rem 1.25rem;
+  display:grid;grid-template-columns:60px 1fr auto;
+  align-items:start;gap:1rem;
+  cursor:pointer;transition:box-shadow .2s,border-color .2s;
+}
+.sched-item:hover{border-color:var(--accent);box-shadow:0 2px 16px rgba(42,138,170,0.12)}
+.si-date{line-height:1.4}
+.si-date strong{display:block;font-size:22px;font-weight:300;color:var(--accent2)}
+.si-date span{font-size:11px;color:var(--text3)}
+.si-info h4{font-size:14px;font-weight:500;color:var(--text);margin-bottom:.3rem}
+.si-info p{font-size:12px;color:var(--text3)}
+.si-tag{
+  font-size:10px;padding:3px 10px;border-radius:20px;
+  border:1px solid var(--border2);color:var(--text3);
+  white-space:nowrap;align-self:start;
+}
+.si-tag.perf{background:rgba(42,138,170,0.08);border-color:var(--accent);color:var(--accent2)}
+.si-tag.event{background:rgba(120,180,200,0.1);border-color:var(--border2)}
+
+.add-btn{
+  width:100%;background:var(--sky4);
+  border:1px dashed var(--border2);
+  color:var(--text3);padding:12px;
+  font-size:13px;cursor:pointer;border-radius:10px;
+  transition:all .2s;margin-top:.75rem;
+}
+.add-btn:hover{background:var(--sky3);color:var(--accent2);border-color:var(--accent)}
+
+.add-form{display:none;background:var(--sky4);border-radius:12px;border:1px solid var(--border);padding:1.25rem;margin-top:.75rem}
+.add-form.show{display:block}
+.form-row{margin-bottom:.75rem}
+.form-row label{display:block;font-size:11px;letter-spacing:0.12em;color:var(--text3);margin-bottom:.3rem}
+.form-row input,.form-row textarea,.form-row select{
+  width:100%;background:#fff;
+  border:1px solid var(--border2);color:var(--text);
+  padding:8px 12px;font-size:13px;font-family:inherit;
+  border-radius:8px;outline:none;
+}
+.form-row input:focus,.form-row textarea:focus{border-color:var(--accent)}
+.form-row textarea{resize:vertical;min-height:70px}
+.form-submit{
+  width:100%;background:var(--accent);border:none;
+  color:#fff;padding:10px;font-size:13px;
+  border-radius:8px;cursor:pointer;transition:background .2s;
+}
+.form-submit:hover{background:var(--accent2)}
+
+.board-list{display:flex;flex-direction:column;gap:.4rem}
+.board-item{
+  display:grid;grid-template-columns:50px 1fr 56px;
+  align-items:center;gap:.75rem;
+  padding:.9rem 1rem;
+  background:var(--sky4);border-radius:10px;
+  border:1px solid transparent;transition:all .15s;cursor:pointer;
+}
+.board-item:hover{background:#fff;border-color:var(--border2)}
+.b-cat{font-size:10px;letter-spacing:0.1em;color:var(--text3)}
+.b-title{font-size:13px;color:var(--text)}
+.b-date{font-size:11px;color:var(--text3);text-align:right}
+
+.popup-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(20,60,80,0.55);
+  backdrop-filter:blur(6px);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.popup-overlay.show{opacity:1;pointer-events:all}
+.popup-box{
+  background:#fff;border-radius:20px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 48px rgba(42,138,170,0.18);
+  max-width:440px;width:100%;padding:2rem;position:relative;
+}
+.popup-close{
+  position:absolute;top:1rem;right:1rem;
+  background:var(--sky4);border:none;
+  color:var(--text3);width:30px;height:30px;
+  border-radius:50%;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.popup-close:hover{background:var(--sky3)}
+.popup-tag{font-size:11px;letter-spacing:0.15em;color:var(--accent);margin-bottom:.75rem}
+.popup-title{font-size:20px;font-weight:500;color:var(--text);margin-bottom:.4rem;line-height:1.4}
+.popup-date{font-size:13px;color:var(--accent2);margin-bottom:1rem}
+.popup-desc{font-size:13px;color:var(--text2);line-height:1.8}
+.popup-meta{margin-top:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.pm-item label{font-size:10px;letter-spacing:0.15em;color:var(--text3);display:block;margin-bottom:.2rem}
+.pm-item span{font-size:13px;color:var(--text)}
+
+footer{
+  margin:0 1.25rem;
+  background:rgba(255,255,255,0.6);
+  border-radius:16px;border:1px solid rgba(168,216,232,0.5);
+  padding:1.5rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.f-logo{font-size:16px;font-weight:600;color:var(--accent2)}
+.f-logo span{font-size:11px;font-weight:400;color:var(--text3);margin-left:.4rem}
+.f-copy{font-size:11px;color:var(--text3)}
+
+@media(max-width:560px){
+  .about-grid{grid-template-columns:1fr}
+  .hero-title{font-size:21px}
+  .sched-item{grid-template-columns:52px 1fr}
+  .si-tag{display:none}
+  .popup-meta{grid-template-columns:1fr}
+  .nav-links li a{padding:0 .6rem;font-size:11px;letter-spacing:0.08em}
+}
+</style>
+
+<div class="wave-bg">
+<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#7bc4d8"/>
+  <g opacity="0.55" fill="none" stroke="#fff" stroke-width="2.2">
+    <path d="M-100,120 C100,80 200,160 400,100 C600,40 700,140 900,90 C1100,40 1150,110 1300,80"/>
+    <path d="M-100,155 C100,115 200,195 400,135 C600,75 700,175 900,125 C1100,75 1150,145 1300,115"/>
+    <path d="M-100,190 C100,150 200,230 400,170 C600,110 700,210 900,160 C1100,110 1150,180 1300,150"/>
+    <path d="M-100,225 C100,185 200,265 400,205 C600,145 700,245 900,195 C1100,145 1150,215 1300,185"/>
+    <path d="M-100,260 C100,220 200,300 400,240 C600,180 700,280 900,230 C1100,180 1150,250 1300,220"/>
+  </g>
+  <g opacity="0.35" fill="none" stroke="#fff" stroke-width="1.2">
+    <path d="M-100,137 C100,97 200,177 400,117 C600,57 700,157 900,107 C1100,57 1150,127 1300,97"/>
+    <path d="M-100,172 C100,132 200,212 400,152 C600,92 700,192 900,142 C1100,92 1150,162 1300,132"/>
+    <path d="M-100,207 C100,167 200,247 400,187 C600,127 700,227 900,177 C1100,127 1150,197 1300,167"/>
+    <path d="M-100,242 C100,202 200,282 400,222 C600,162 700,262 900,212 C1100,162 1150,232 1300,202"/>
+  </g>
+  <g opacity="0.7" fill="none" stroke="#c8e8f2" stroke-width="3">
+    <path d="M-100,320 C150,270 250,380 500,300 C750,220 850,350 1100,280 C1200,250 1250,300 1300,270"/>
+    <path d="M-100,370 C150,320 250,430 500,350 C750,270 850,400 1100,330 C1200,300 1250,350 1300,320"/>
+    <path d="M-100,420 C150,370 250,480 500,400 C750,320 850,450 1100,380 C1200,350 1250,400 1300,370"/>
+  </g>
+  <g opacity="0.4" fill="none" stroke="#fff" stroke-width="1.5">
+    <path d="M-100,345 C150,295 250,405 500,325 C750,245 850,375 1100,305 C1200,275 1250,325 1300,295"/>
+    <path d="M-100,395 C150,345 250,455 500,375 C750,295 850,425 1100,355 C1200,325 1250,375 1300,345"/>
+  </g>
+  <g opacity="0.6" fill="none" stroke="#a8d8e8" stroke-width="2.5">
+    <path d="M-100,500 C200,440 350,560 600,480 C850,400 950,540 1200,460 C1250,445 1280,480 1300,455"/>
+    <path d="M-100,550 C200,490 350,610 600,530 C850,450 950,590 1200,510 C1250,495 1280,530 1300,505"/>
+    <path d="M-100,600 C200,540 350,660 600,580 C850,500 950,640 1200,560 C1250,545 1280,580 1300,555"/>
+    <path d="M-100,650 C200,590 350,710 600,630 C850,550 950,690 1200,610 C1250,595 1280,630 1300,605"/>
+    <path d="M-100,700 C200,640 350,760 600,680 C850,600 950,740 1200,660 C1250,645 1280,680 1300,655"/>
+  </g>
+  <g opacity="0.3" fill="none" stroke="#fff" stroke-width="1">
+    <path d="M-100,525 C200,465 350,585 600,505 C850,425 950,565 1200,485"/>
+    <path d="M-100,575 C200,515 350,635 600,555 C850,475 950,615 1200,535"/>
+    <path d="M-100,625 C200,565 350,685 600,605 C850,525 950,665 1200,585"/>
+    <path d="M-100,675 C200,615 350,735 600,655 C850,575 950,715 1200,635"/>
+  </g>
+</svg>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">하제 <span>내일의 극단</span></div>
+    <ul class="nav-links">
+      <li><a onclick="goTo('about',this)" class="active">About</a></li>
+      <li><a onclick="goTo('schedule',this)">Schedule</a></li>
+      <li><a onclick="goTo('board',this)">Board</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="site-wrap">
+<div class="section-wrap">
+
+  <section id="about">
+    <div class="card">
+      <div class="section-label">About</div>
+      <h1 class="hero-title"><strong>하제</strong> — 내일을 향해<br>나아가는 이야기</h1>
+      <p class="hero-sub">독립극단 하제는 오늘의 경계에서 내일을 꿈꾸는 실험적 연극 집단입니다.<br>파도처럼 끊임없이 변하는 무대 위에서 새로운 언어를 만들어갑니다.</p>
+      <div class="about-grid">
+        <div class="about-item">
+          <h4>창단</h4>
+          <p>2015년 서울 창단. 소극장 중심의 독립 프로덕션으로 매 시즌 새 작품을 올립니다.</p>
         </div>
-    </section>
-
-    <section id="about">
-        <h2>About haje</h2>
-        <p>극단 하제는 정형화되지 않은 날것의 아름다움을 무대 위에 펼치는 독립 예술단체입니다.</p>
-        </section>
-
-    <section id="schedule">
-        <h2>공연 일정</h2>
-        <div class="play-card">
-            <h3>창단 공연 &lt;연극 제목&gt;</h3>
-            <p><strong>일시:</strong> 2026.XX.XX ~ 2026.XX.XX</p>
-            <p><strong>장소:</strong> 소극장 하제</p>
-            <a href="티켓예매링크" class="btn-ticket" target="_blank">티켓 예매하기</a>
+        <div class="about-item">
+          <h4>예술 방향</h4>
+          <p>신체극과 텍스트의 경계를 탐구하며 동시대 관객과 호흡합니다.</p>
         </div>
-    </section>
+        <div class="about-item">
+          <h4>단원</h4>
+          <p>배우 8인, 연출 2인, 스태프 12인. 신진 예술가 레지던시 운영.</p>
+        </div>
+        <div class="about-item">
+          <h4>수상</h4>
+          <p>서울연극제 대상(2022), 한국연극협회 올해의 단체상(2023).</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section id="notice">
-        <h2>공지사항 / 소식</h2>
-        <p>새로운 소식은 극단 공식 인스타그램(@haje_theater)에서도 확인하실 수 있습니다.</p>
-    </section>
+  <section id="schedule">
+    <div class="card">
+      <div class="section-label">Schedule</div>
+      <div class="cal-header">
+        <div class="cal-month-label" id="cal-month-label">2026년 6월</div>
+        <div class="cal-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <button class="add-btn" onclick="toggleForm()">＋ 스케줄 등록하기</button>
+      <div class="add-form" id="add-form">
+        <div class="form-row"><label>날짜</label><input type="date" id="f-date"></div>
+        <div class="form-row"><label>공연 / 행사명</label><input type="text" id="f-title" placeholder="예: 《파도》 정기공연"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+          <div class="form-row"><label>유형</label>
+            <select id="f-type"><option value="perf">공연</option><option value="event">행사</option><option value="workshop">워크숍</option></select>
+          </div>
+          <div class="form-row"><label>시간</label><input type="text" id="f-time" placeholder="오후 7:30"></div>
+        </div>
+        <div class="form-row"><label>장소</label><input type="text" id="f-venue" placeholder="소극장 하제"></div>
+        <div class="form-row"><label>설명</label><textarea id="f-desc" placeholder="공연 또는 행사 설명"></textarea></div>
+        <button class="form-submit" onclick="addEvent()">등록하기</button>
+      </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 독립극단 하제. All rights reserved. Contact: info@haje.com</p>
-    </footer>
+    <div class="sched-list" id="sched-list"></div>
+  </section>
 
-</body>
-</html>
+  <section id="board" style="margin-bottom:1.5rem">
+    <div class="card">
+      <div class="section-label">Board</div>
+      <div class="board-list">
+        <div class="board-item"><span class="b-cat">공지</span><span class="b-title">2026년 하반기 공연 일정 안내</span><span class="b-date">06.10</span></div>
+        <div class="board-item"><span class="b-cat">모집</span><span class="b-title">2026 하반기 신규 단원 오디션 공고</span><span class="b-date">06.05</span></div>
+        <div class="board-item"><span class="b-cat">후기</span><span class="b-title">《파도》 공연 관객 후기 모음</span><span class="b-date">05.28</span></div>
+        <div class="board-item"><span class="b-cat">모집</span><span class="b-title">여름 집중 워크숍 참가자 모집</span><span class="b-date">05.20</span></div>
+        <div class="board-item"><span class="b-cat">공지</span><span class="b-title">2026 봄 시즌 결산 및 다음 시즌 예고</span><span class="b-date">05.10</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="f-logo">하제 <span>극단 · HAJE</span></div>
+  <div class="f-copy">Seoul, Korea · © 2026</div>
+</footer>
+</div>
+
+<div class="popup-overlay" id="popup" onclick="closeOverlay(event)">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-tag" id="p-tag"></div>
+    <div class="popup-title" id="p-title"></div>
+    <div class="popup-date" id="p-date"></div>
+    <div class="popup-desc" id="p-desc"></div>
+    <div class="popup-meta" id="p-meta"></div>
+  </div>
+</div>
+
+<script>
+const DOW=['일','월','화','수','목','금','토'];
+const MON=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+let cy=2026,cm=5;
+let events=[
+  {date:'2026-06-07',title:'《파도》 정기공연',type:'perf',venue:'소극장 하제',time:'오후 7:30',desc:'극단 하제의 대표 레퍼토리. 파도처럼 밀려오는 기억과 이별의 이야기를 신체극으로 풀어냅니다. 런닝타임 75분.'},
+  {date:'2026-06-07',title:'공연 전 아티스트 토크',type:'event',venue:'로비',time:'오후 6:45',desc:'공연 전 40분간 연출과 배우들이 작품에 대해 이야기를 나눕니다.'},
+  {date:'2026-06-14',title:'신체극 워크숍',type:'event',venue:'스튜디오 하제',time:'오전 10:00',desc:'호흡과 움직임으로 무대 위 존재감을 탐구하는 반일 워크숍. 사전 신청 필수.'},
+  {date:'2026-06-21',title:'《파도》 마티네 공연',type:'perf',venue:'소극장 하제',time:'오후 4:00',desc:'토요일 오후 마티네. 동일 프로그램, 낮 시간 공연입니다.'},
+  {date:'2026-06-28',title:'레지던시 설명회',type:'event',venue:'하제 사무국',time:'오후 2:00',desc:'2026 하반기 신진 예술가 레지던시 프로그램 설명회. 지원 자격 및 일정 안내.'},
+];
+
+function dk(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+
+function render(){
+  const grid=document.getElementById('cal-grid');
+  document.getElementById('cal-month-label').textContent=`${cy}년 ${MON[cm]}`;
+  grid.innerHTML='';
+  DOW.forEach(d=>{const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el)});
+  const first=new Date(cy,cm,1),fdow=first.getDay(),dim=new Date(cy,cm+1,0).getDate(),pd=new Date(cy,cm,0).getDate();
+  const today=new Date(),tk=dk(today.getFullYear(),today.getMonth(),today.getDate());
+  for(let i=0;i<fdow;i++){const el=document.createElement('div');el.className='cal-day other-month';el.innerHTML=`<span class="day-num">${pd-fdow+1+i}</span>`;grid.appendChild(el)}
+  for(let d=1;d<=dim;d++){
+    const key=dk(cy,cm,d),devs=events.filter(e=>e.date===key);
+    const el=document.createElement('div');
+    el.className='cal-day'+(key===tk?' today':'')+(devs.length?' has-event':'');
+    let h=`<span class="day-num">${d}</span>`;
+    devs.slice(0,2).forEach(ev=>{h+=`<span class="event-dot" onclick="event.stopPropagation();openEvt(${JSON.stringify(ev).replace(/"/g,'&quot;')})">${ev.title}</span>`});
+    el.innerHTML=h;
+    if(devs.length)el.onclick=()=>openEvt(devs[0]);
+    grid.appendChild(el);
+  }
+  const rem=42-(fdow+dim);
+  for(let i=1;i<=rem;i++){const el=document.createElement('div');el.className='cal-day other-month';el.innerHTML=`<span class="day-num">${i}</span>`;grid.appendChild(el)}
+  renderList();
+}
+
+function renderList(){
+  const list=document.getElementById('sched-list');
+  const me=events.filter(e=>{const[y,m]=e.date.split('-').map(Number);return y===cy&&m===cm+1}).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!me.length){list.innerHTML='<div style="text-align:center;padding:1.5rem;font-size:13px;color:var(--text3);background:#fff;border-radius:12px;border:1px solid var(--border)">이번 달 등록된 스케줄이 없습니다.</div>';return}
+  const tl={'perf':'공연','event':'행사','workshop':'워크숍'};
+  list.innerHTML=me.map(ev=>{
+    const[y,m,d]=ev.date.split('-');
+    const dow=DOW[new Date(+y,+m-1,+d).getDay()];
+    return `<div class="sched-item" onclick='openEvt(${JSON.stringify(ev).replace(/'/g,"&#39;")})'>
+      <div class="si-date"><strong>${d}</strong><span>${MON[+m-1]} ${dow}</span></div>
+      <div class="si-info"><h4>${ev.title}</h4><p>${ev.venue} · ${ev.time}</p></div>
+      <div class="si-tag ${ev.type}">${tl[ev.type]||ev.type}</div>
+    </div>`;
+  }).join('');
+}
+
+function changeMonth(d){cm+=d;if(cm>11){cm=0;cy++}if(cm<0){cm=11;cy--}render()}
+
+function openEvt(ev){
+  const[y,m,d]=ev.date.split('-');
+  const dow=DOW[new Date(+y,+m-1,+d).getDay()];
+  const tl={'perf':'공연','event':'행사','workshop':'워크숍'};
+  document.getElementById('p-tag').textContent=tl[ev.type]||ev.type;
+  document.getElementById('p-title').textContent=ev.title;
+  document.getElementById('p-date').textContent=`${y}년 ${MON[+m-1]} ${d}일 (${dow})`;
+  document.getElementById('p-desc').textContent=ev.desc;
+  document.getElementById('p-meta').innerHTML=`<div class="pm-item"><label>장소</label><span>${ev.venue}</span></div><div class="pm-item"><label>시간</label><span>${ev.time}</span></div>`;
+  document.getElementById('popup').classList.add('show');
+}
+function closeOverlay(e){if(e.target.id==='popup')closePopup()}
+function closePopup(){document.getElementById('popup').classList.remove('show')}
+
+function goTo(id,el){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleForm(){document.getElementById('add-form').classList.toggle('show')}
+function addEvent(){
+  const date=document.getElementById('f-date').value,title=document.getElementById('f-title').value.trim();
+  if(!date||!title){alert('날짜와 이름을 입력하세요');return}
+  events.push({date,title,type:document.getElementById('f-type').value,venue:document.getElementById('f-venue').value||'미정',time:document.getElementById('f-time').value||'시간 미정',desc:document.getElementById('f-desc').value||'설명 없음'});
+  events.sort((a,b)=>a.date.localeCompare(b.date));
+  const[y,m]=date.split('-').map(Number);cy=y;cm=m-1;
+  document.getElementById('add-form').classList.remove('show');
+  ['f-date','f-title','f-venue','f-time','f-desc'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+render();
+</script>
