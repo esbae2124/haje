@@ -110,27 +110,36 @@
         
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .cal-month-label { font-size: 14px; font-weight: 700; color: var(--text); }
-        .cal-nav { display: flex; gap: 8px; align-items: center; }
+        
+        /* 캘린더 전용 네비게이션 버튼 고도화 (image_5278a2.png 스타일 완벽 일치) */
+        .cal-nav { display: flex; gap: 6px; align-items: center; }
         .cal-nav button { 
-            background: #e8f7fb; 
-            border: none; 
-            color: var(--accent); 
+            background: var(--sky4); 
+            border: 1px solid var(--border2); 
+            color: var(--accent2); 
             width: 32px; 
             height: 32px; 
-            font-size: 11px; 
             cursor: pointer; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(42, 138, 170, 0.08);
+            outline: none;
+        }
+        .cal-nav button i {
+            font-size: 10px;
+            display: inline-block;
+            transition: transform 0.15s ease;
         }
         .cal-nav button:hover {
-            background: var(--accent);
-            color: #fff;
-            transform: translateY(-1px) scale(1.05);
-            box-shadow: 0 4px 12px rgba(42, 138, 170, 0.2);
+            background: var(--sky3);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+        .cal-nav button:active {
+            transform: scale(0.95);
         }
 
         .cal-grid { 
@@ -220,20 +229,98 @@
         .b-title { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .b-date { font-size: 10px; color: var(--text3); text-align: right; }
 
-        /* 관리자 전용 권한 제어 */
+        /* 관리자 전용 권한 제어 및 가이드형 점선 버튼 개선 */
         .admin-only { display: none; }
         body.admin-mode .admin-only { display: block; }
-        .add-btn { width: 100%; background: var(--sky4); border: 1px dashed var(--border2); color: var(--text3); padding: 10px; font-size: 12px; cursor: pointer; border-radius: 10px; margin-top: 0.75rem; }
+        
+        .add-btn { 
+            width: 100%; 
+            background: #fff; 
+            border: 1px dashed var(--border2); 
+            color: var(--accent2); 
+            padding: 11px; 
+            font-size: 12px; 
+            font-weight: 500;
+            cursor: pointer; 
+            border-radius: 12px; 
+            margin-top: 0.75rem; 
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .add-btn:hover {
+            background: var(--sky4);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
         .form-box { display: none; background: var(--sky4); border: 1px solid var(--border2); padding: 1rem; border-radius: 12px; margin-top: 0.75rem; }
         .form-box.show { display: block; }
         .form-row { margin-bottom: 0.6rem; }
         .form-row label { display: block; font-size: 10px; color: var(--text3); margin-bottom: 3px; font-weight: 700; }
         .form-row input, .form-row select, .form-row textarea { width: 100%; background: #fff; border: 1px solid var(--border2); padding: 6px 10px; font-size: 12px; border-radius: 8px; outline: none; }
-        .form-submit { flex: 1; background: var(--accent); border: none; color: #fff; padding: 8px; font-size: 12px; border-radius: 8px; cursor: pointer; font-weight: 500; text-align: center; }
+        
+        /* 폼 제출 및 공용 기능 버튼의 하이엔드 스타일 보정 */
+        .form-submit { 
+            flex: 1; 
+            background: var(--accent); 
+            border: none; 
+            color: #fff; 
+            padding: 10px 16px; 
+            font-size: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            text-align: center; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .form-submit:hover {
+            background: var(--accent2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42, 138, 170, 0.15);
+        }
+        .form-submit:active {
+            transform: translateY(0);
+        }
 
         .popup-overlay { position: fixed; inset: 0; background: rgba(20,60,80,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }
         .popup-box { background: #fff; padding: 1.5rem; border-radius: 20px; max-width: 380px; width: 100%; position: relative; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(42,138,170,0.15); }
-        .popup-close { position: absolute; top: 0.75rem; right: 0.75rem; cursor: pointer; background: var(--sky4); border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        
+        /* 팝업 닫기 미니 원형 버튼 피드백 보정 */
+        .popup-close { 
+            position: absolute; 
+            top: 0.75rem; 
+            right: 0.75rem; 
+            cursor: pointer; 
+            background: var(--sky4); 
+            border: 1px solid var(--border2); 
+            color: var(--accent2);
+            width: 28px; 
+            height: 28px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.2s ease;
+            font-size: 11px;
+        }
+        .popup-close:hover {
+            background: var(--sky3);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.05) rotate(90deg);
+        }
+
         .popup-tag { font-size: 10px; color: var(--accent); font-weight: 700; margin-bottom: 0.4rem; letter-spacing: 0.1em; }
         .popup-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
         .popup-date { font-size: 12px; color: var(--text3); margin-bottom: 0.75rem; }
@@ -242,7 +329,35 @@
         .pm-item label { font-size: 9px; color: var(--text3); font-weight: 700; display: block; }
         .pm-item span { font-size: 12px; color: var(--text); }
 
-        .admin-trigger { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 90; background: #fff; border: 1px solid var(--border2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 16px; }
+        /* 플로팅 관리자 락 버튼 피드백 효과 극대화 */
+        .admin-trigger { 
+            position: fixed; 
+            bottom: 1.25rem; 
+            right: 1.25rem; 
+            z-index: 90; 
+            background: #fff; 
+            border: 1px solid var(--border2); 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            box-shadow: 0 4px 16px rgba(42, 138, 170, 0.12); 
+            font-size: 16px; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--accent2);
+        }
+        .admin-trigger:hover {
+            transform: scale(1.08) rotate(5deg);
+            border-color: var(--accent);
+            box-shadow: 0 6px 20px rgba(42, 138, 170, 0.2);
+        }
+        .admin-trigger:active {
+            transform: scale(0.95);
+        }
+
         .toast-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(26, 58, 69, 0.95); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; z-index: 300; display: none; }
         .toast-box.show { display: block; animation: fadeInUp 0.3s forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 15px); } to { opacity: 1; transform: translate(-50%, 0); } }
@@ -250,7 +365,25 @@
         .confirm-modal { position: fixed; inset: 0; background: rgba(20,60,80,0.6); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 250; padding: 1rem; }
         .confirm-content { background: #fff; padding: 1.5rem; border-radius: 18px; max-width: 290px; width: 100%; text-align: center; }
         .confirm-buttons { display: flex; gap: 6px; margin-top: 15px; }
-        .confirm-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; }
+        
+        /* 모달 버튼 라인 정리 */
+        .confirm-btn { 
+            flex: 1; 
+            padding: 9px 16px; 
+            border-radius: 10px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .confirm-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .confirm-btn:active {
+            transform: translateY(0);
+        }
 
         footer { margin: 0 0.75rem; background: rgba(255,255,255,0.6); border-radius: 16px; border: 1px solid rgba(168,216,232,0.5); padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
         .f-logo { font-size: 13px; font-weight: 700; color: var(--accent2); }
@@ -297,6 +430,7 @@
                 <div class="section-label">Schedule</div>
                 <div class="cal-header">
                     <div id="cal-month-label" style="font-weight:700">2026년 6월</div>
+                    <!-- 개편된 캘린더 전용 네비게이션 버튼 -->
                     <div class="cal-nav">
                         <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
                         <button onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
@@ -364,7 +498,7 @@
         const demoEvents = [
             {date:'2026-06-07',title:'《파도》 창단 기념공연',type:'perf',venue:'소극장 하제',time:'오후 7:30',desc:'경력과 나이의 장벽을 허물고 마침내 시작하는 극단 하제의 찬란한 창단 정기 레퍼토리 공연입니다.'},
             {date:'2026-06-07',title:'관객과의 대화 (GV)',type:'event',venue:'로비 라운지',time:'오후 9:00',desc:'공연 종료 후 약 30분간 배우와 연출진이 들려주는 창단 비하인드 스토리.'},
-            {date:'2026-06-14',title:'오픈 연극 워크숍',type:'workshop',venue:'극단 하제 연습실',time:'오전 10:00',desc:'연극 무대에 서보고 싶었던 모든 사람들을 위한 일일 신체극 가이드 워크숍.'}
+            {date:'2026-06-14',title:'오픈 연극 워크숍',type:'workshop',venue:'극단 하제 연습실',time:'오전 10:00',desc:'연극 무대에 서보고 싶었던 모든 사람들을 위한 일일 신체극 가일 워크숍.'}
         ];
 
         const demoPosts = [
